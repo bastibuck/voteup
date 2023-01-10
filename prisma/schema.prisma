@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Group {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt   DateTime @default(now())
+    lastVote    DateTime @default(now())
+    name        String
+    description String?
+    items       Item[]
+}
+
+model Item {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    text      String
+    votes     Int      @default(0)
+    group     Group    @relation(fields: [groupId], references: [id])
+    groupId   String   @db.ObjectId
+}
