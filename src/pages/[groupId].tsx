@@ -24,7 +24,6 @@ import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
 import type { Group } from "@prisma/client";
-import { useRouter } from "next/router";
 
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
@@ -147,7 +146,9 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <meta
           property="og:image"
           content={`${
-            process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : ""
+            process.env.NEXT_PUBLIC_VERCEL_ENV
+              ? "https://" + process.env.NEXT_PUBLIC_VERCEL_ENV
+              : ""
           }/api/og?title=${group.data.name}`}
         />
       </Head>
@@ -194,7 +195,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
-                className="indicator card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+                className="card indicator mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
                 key={item.id}
                 layout
               >
