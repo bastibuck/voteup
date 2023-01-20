@@ -146,8 +146,8 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <meta
           property="og:image"
           content={`${
-            process.env.NEXT_PUBLIC_VERCEL_ENV
-              ? "https://" + process.env.NEXT_PUBLIC_VERCEL_ENV
+            process.env.NEXT_PUBLIC_VERCEL_URL
+              ? "https://" + process.env.NEXT_PUBLIC_VERCEL_URL
               : ""
           }/api/og?title=${group.data.name}`}
         />
