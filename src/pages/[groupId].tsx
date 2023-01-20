@@ -24,6 +24,7 @@ import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
 import type { Group } from "@prisma/client";
+import { useRouter } from "next/router";
 
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
@@ -142,6 +143,13 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <title>{group.data.name} | Voteup</title>
         <meta name="description" content="Gather and vote items in a group" />
         <link rel="icon" href="/favicon.ico" />
+
+        <meta
+          property="og:image"
+          content={`${
+            process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : ""
+          }/api/og/title=${group.data.name}`}
+        />
       </Head>
 
       <main className="items-start bg-base-200">
