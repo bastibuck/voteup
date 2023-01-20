@@ -47,10 +47,10 @@ const Home: NextPage = () => {
           <div className="text-center lg:text-left">
             <h1 className="mb-0 font-bold">VoteUp</h1>
             <p className="mt-0 py-6">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
-              et a id nisi.
+              Need to vote for some idea? Want to collect questions during a
+              talk and have other participants vote for the top questions?
             </p>
+            <p>Create a group and share the invite link to start voting 🚀.</p>
           </div>
 
           <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl">

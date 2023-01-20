@@ -9,9 +9,9 @@ module.exports = {
     themes: [
       // "bumblebee",
       // "emerald",
-      // "corporate",
+      "corporate",
       // "garden",
-      "wireframe",
+      // "wireframe",
       // "dracula",
       // "cmyk",
       // "autumn",
