@@ -17,6 +17,7 @@ import {
   HiOutlineClipboardDocumentList,
   HiOutlineClipboardDocumentCheck,
 } from "react-icons/hi2";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
@@ -180,27 +181,32 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         </div>
 
         <div className="grid place-items-center px-6">
-          {group.data.items.map((item) => (
-            <div
-              className="card indicator mx-6 mb-10 w-full max-w-xl bg-base-100 shadow-xl"
-              key={item.id}
-            >
-              <div className="indicator-item">
-                <UpVoteButton
-                  onClick={() => handleUpvote(item.id)}
-                  hasBeenVotedFor={hasBeenVotedFor(item.id)}
-                />
-              </div>
-
-              <div className="card-body flex flex-row items-baseline justify-between">
-                <div className="m-0">{item.text}</div>
-
-                <div className="badge-outline badge badge-lg shrink-0">
-                  {item.votes} votes
+          <AnimatePresence initial={false}>
+            {group.data.items.map((item) => (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                className="indicator card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+                key={item.id}
+                layout
+              >
+                <div className="indicator-item">
+                  <UpVoteButton
+                    onClick={() => handleUpvote(item.id)}
+                    hasBeenVotedFor={hasBeenVotedFor(item.id)}
+                  />
                 </div>
-              </div>
-            </div>
-          ))}
+
+                <div className="card-body flex flex-row items-baseline justify-between">
+                  <div className="m-0">{item.text}</div>
+
+                  <div className="badge-outline badge badge-lg shrink-0">
+                    {item.votes} votes
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
         <div className="grid place-items-center px-6 pb-6">
