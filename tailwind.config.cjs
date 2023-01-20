@@ -4,5 +4,19 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
+  daisyui: {
+    themes: [
+      // "bumblebee",
+      // "emerald",
+      // "corporate",
+      // "garden",
+      "wireframe",
+      // "dracula",
+      // "cmyk",
+      // "autumn",
+      // "lemonade",
+      // "winter",
+    ],
+  },
 };

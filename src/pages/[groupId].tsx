@@ -53,6 +53,7 @@ const Group: NextPage<GroupProps> = ({ groupId }) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<z.infer<typeof NewItemSchema>>({
     resolver: zodResolver(NewItemSchema),
     defaultValues: {
@@ -64,12 +65,25 @@ const Group: NextPage<GroupProps> = ({ groupId }) => {
 
   const onSubmit = handleSubmit((data) => {
     createItemMutation.mutate(data);
+    reset();
   });
 
   const handleUpvote = (id: string) => upvoteItemMutation.mutate(id);
 
   if (group.isLoading || !group.data) {
-    return <>Loading</>;
+    return (
+      <main className="hero min-h-screen items-start bg-base-200">
+        <div className="hero-content pt-12 text-center">
+          <div className="max-w-md animate-pulse ">
+            <h1 className="text-5xl font-bold blur">Group name</h1>
+            <p className="blur">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+              Inventore, nemo!
+            </p>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -79,50 +93,79 @@ const Group: NextPage<GroupProps> = ({ groupId }) => {
         <meta name="description" content="Gather and vote items in a group" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            {group.data?.name}
-          </h1>
 
-          <div>{group.data?.description}</div>
-
-          <div className="grid gap-3">
-            {group.data.items.map((item) => (
-              <div className="w-full rounded bg-purple-400 p-4" key={item.id}>
-                {item.text} - Upvotes: {item.votes}{" "}
-                <button
-                  className="ml-4 rounded-full border border-black p-3"
-                  onClick={() => handleUpvote(item.id)}
-                >
-                  +1
-                </button>
-              </div>
-            ))}
+      <main className="items-start bg-base-200">
+        <div className="hero">
+          <div className="hero-content pt-12 text-center">
+            <div className="max-w-md">
+              <h1 className="text-5xl font-bold">{group.data.name}</h1>
+              <p>{group.data.description}</p>
+            </div>
           </div>
+        </div>
 
-          <div className="w-96 max-w-full">
-            <form onSubmit={onSubmit} className="grid gap-3">
-              <label className="text-white" htmlFor="name">
-                Name
+        <div className="grid place-items-center px-6">
+          {group.data.items.map((item) => (
+            <div
+              className="card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+              key={item.id}
+            >
+              <div className="card-body">
+                <p className="m-0">{item.text}</p>
+
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn gap-2"
+                    onClick={() => handleUpvote(item.id)}
+                  >
+                    {item.votes} Votes
+                    <div className="badge-primary badge">+1</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid place-items-center px-6 pb-6">
+          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl">
+            <form onSubmit={onSubmit} className="card-body">
+              <h2 className="card-title m-0">Create item</h2>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">
+                    Text <span className="text-red-800">*</span>
+                  </span>
+                </label>
                 <input
-                  id="name"
-                  className="w-full rounded-sm border p-3 text-black"
+                  type="text"
+                  placeholder="Item text"
+                  className="input-bordered input"
+                  disabled={createItemMutation.isLoading}
                   {...register("text")}
                 />
-                {errors.text && (
-                  <p className="font-bold text-red-400 ">
-                    {errors.text.message}
-                  </p>
-                )}
-              </label>
 
-              <button
-                type="submit"
-                className="mt-2 rounded-sm bg-[hsl(280,100%,70%)] p-3 text-xl  text-white"
-              >
-                Create
-              </button>
+                {errors.text ? (
+                  <span className="label-text-alt label text-red-700">
+                    {errors.text.message}
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="form-control mt-6">
+                <button
+                  type="submit"
+                  disabled={createItemMutation.isLoading}
+                  className={`btn-primary btn ${
+                    createItemMutation.isLoading ? "loading" : ""
+                  }`}
+                >
+                  {createItemMutation.isLoading
+                    ? "Creating item..."
+                    : "Create item"}
+                </button>
+              </div>
             </form>
           </div>
         </div>

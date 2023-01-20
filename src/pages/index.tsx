@@ -15,7 +15,6 @@ const Home: NextPage = () => {
 
   const createGroupMutation = api.group.create.useMutation({
     async onSuccess(data) {
-      console.log(data);
       await router.push(`/${data.id}`);
     },
     onError(error) {
@@ -42,48 +41,66 @@ const Home: NextPage = () => {
         <meta name="description" content="Gather and vote items in a group" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Vote<span className="text-[hsl(280,100%,70%)]">Up</span>
-          </h1>
 
-          <div className="w-96 max-w-full">
-            <form onSubmit={onSubmit} className="grid gap-3">
-              <label className="text-white" htmlFor="name">
-                Name
+      <main className="hero min-h-screen bg-base-200">
+        <div className="hero-content max-w-3xl flex-col lg:flex-row-reverse">
+          <div className="text-center lg:text-left">
+            <h1 className="mb-0 font-bold">VoteUp</h1>
+            <p className="mt-0 py-6">
+              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
+              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
+              et a id nisi.
+            </p>
+          </div>
+
+          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl">
+            <form onSubmit={onSubmit} className="card-body">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">
+                    Name <span className="text-red-800">*</span>
+                  </span>
+                </label>
                 <input
-                  id="name"
-                  className="w-full rounded-sm border p-3 text-black"
+                  type="text"
+                  placeholder="Group name"
+                  className="input-bordered input"
+                  disabled={createGroupMutation.isLoading}
                   {...register("name")}
                 />
-                {errors.name && (
-                  <p className="font-bold text-red-400 ">
-                    {errors.name.message}
-                  </p>
-                )}
-              </label>
 
-              <label className="text-white" htmlFor="description">
-                Description
+                {errors.name ? (
+                  <span className="label-text-alt label text-red-700">
+                    {errors.name.message}
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Description</span>
+                </label>
                 <textarea
-                  id="description"
-                  className="w-full rounded-sm border p-3 text-black"
+                  placeholder="Add a useful description"
+                  className="textarea-bordered textarea"
+                  disabled={createGroupMutation.isLoading}
                   {...register("description")}
                 />
-                {errors.description && (
-                  <p className="font-bold text-red-400 ">
-                    {errors.description.message}
-                  </p>
-                )}
-              </label>
+              </div>
 
-              <button
-                type="submit"
-                className="mt-2 rounded-sm bg-[hsl(280,100%,70%)] p-3 text-xl  text-white"
-              >
-                Create
-              </button>
+              <div className="form-control mt-6">
+                <button
+                  type="submit"
+                  disabled={createGroupMutation.isLoading}
+                  className={`btn-primary btn ${
+                    createGroupMutation.isLoading ? "loading" : ""
+                  }`}
+                >
+                  {createGroupMutation.isLoading
+                    ? "Loading group..."
+                    : "Create group"}
+                </button>
+              </div>
             </form>
           </div>
         </div>
