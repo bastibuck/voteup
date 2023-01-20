@@ -15,37 +15,30 @@ import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
+import type { Group } from "@prisma/client";
 
-const GroupPropsSchema = z.object({
-  groupId: z.string(),
-});
+type GroupProps = {
+  serverSideGroup: Group;
+};
 
-type GroupProps = z.infer<typeof GroupPropsSchema>;
-
-const Group: NextPage<GroupProps> = ({ groupId }) => {
+const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
 
   const createItemMutation = api.item.create.useMutation({
-    onSuccess(data) {
-      console.log(data);
-    },
     onError(error) {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate(groupId);
+      utils.group.getById.invalidate(serverSideGroup.id);
     },
   });
 
   const upvoteItemMutation = api.item.voteUpById.useMutation({
-    onSuccess(data) {
-      console.log(data);
-    },
     onError(error) {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate(groupId);
+      utils.group.getById.invalidate(serverSideGroup.id);
     },
   });
 
@@ -57,11 +50,14 @@ const Group: NextPage<GroupProps> = ({ groupId }) => {
   } = useForm<z.infer<typeof NewItemSchema>>({
     resolver: zodResolver(NewItemSchema),
     defaultValues: {
-      group: groupId,
+      group: serverSideGroup.id,
     },
   });
 
-  const group = api.group.getById.useQuery(groupId);
+  const group = api.group.getById.useQuery(serverSideGroup.id, {
+    initialData: serverSideGroup,
+    refetchInterval: 5000,
+  });
 
   const onSubmit = handleSubmit((data) => {
     createItemMutation.mutate(data);
@@ -174,28 +170,35 @@ const Group: NextPage<GroupProps> = ({ groupId }) => {
   );
 };
 
-export default Group;
+export default GroupPage;
+
+const GroupPropsSchema = z.object({
+  groupId: z.string(),
+});
 
 export const getServerSideProps: GetServerSideProps<GroupProps> = async (
   context
 ) => {
-  const { groupId } = GroupPropsSchema.parse(context.query);
-
   try {
-    await prisma.group.findFirstOrThrow({
+    const { groupId } = GroupPropsSchema.parse(context.query);
+
+    const serverSideGroup = await prisma.group.findFirstOrThrow({
       where: {
         id: groupId,
       },
+      include: {
+        items: true,
+      },
     });
+
+    return {
+      props: {
+        serverSideGroup,
+      },
+    };
   } catch (error) {
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      groupId,
-    },
-  };
 };

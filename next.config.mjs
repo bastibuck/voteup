@@ -1,3 +1,5 @@
+import { withSuperjson } from "next-superjson";
+
 // @ts-check
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
@@ -14,4 +16,5 @@ const config = {
     defaultLocale: "en",
   },
 };
-export default config;
+
+export default withSuperjson()(config);
