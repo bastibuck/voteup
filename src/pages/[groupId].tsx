@@ -5,13 +5,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
+import { useEffect, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalStorage } from "react-use";
+import { useCopyToClipboard, useLocalStorage } from "react-use";
+import {
+  HiOutlineClipboardDocumentList,
+  HiOutlineClipboardDocumentCheck,
+} from "react-icons/hi2";
 
 import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
@@ -30,6 +35,8 @@ type GroupProps = {
 const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
 
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
   const createItemMutation = api.item.create.useMutation({
     onError(error) {
       console.error(error);
@@ -43,6 +50,26 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
     serverSideGroup.id,
     []
   );
+
+  const [copyResult, copyToClipboard] = useCopyToClipboard();
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    if (copyResult.value !== undefined && copyResult.error === undefined) {
+      setTooltipVisible(true);
+
+      timeoutId = setTimeout(() => {
+        setTooltipVisible(false);
+      }, 4000);
+    }
+
+    return () => {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [copyResult]);
 
   const upvoteItemMutation = api.item.voteUpById.useMutation({
     onError(error) {
@@ -88,6 +115,10 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
     return votes?.includes(id) ?? false;
   };
 
+  const copyUrlToClipboard = () => {
+    copyToClipboard(window.location.href);
+  };
+
   if (group.isLoading || !group.data) {
     return (
       <main className="hero min-h-screen items-start bg-base-200">
@@ -116,7 +147,33 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <div className="hero">
           <div className="hero-content pt-12 text-center">
             <div className="max-w-md">
-              <h1 className="text-5xl font-bold">{group.data.name}</h1>
+              <div className="flex items-baseline gap-4">
+                <h1 className="text-5xl font-bold">{group.data.name} </h1>
+                <div
+                  className={`tooltip tooltip-right ${
+                    tooltipVisible ? "tooltip-open tooltip-success" : ""
+                  }`}
+                  data-tip={
+                    tooltipVisible
+                      ? "Link copied to clipboard"
+                      : "Copy link to clipboard"
+                  }
+                >
+                  <button
+                    disabled={tooltipVisible}
+                    className={`text-2xl ${
+                      tooltipVisible ? "text-success" : "text-primary"
+                    }`}
+                    onClick={copyUrlToClipboard}
+                  >
+                    {tooltipVisible ? (
+                      <HiOutlineClipboardDocumentCheck />
+                    ) : (
+                      <HiOutlineClipboardDocumentList />
+                    )}
+                  </button>
+                </div>
+              </div>
               <p>{group.data.description}</p>
             </div>
           </div>
@@ -125,7 +182,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <div className="grid place-items-center px-6">
           {group.data.items.map((item) => (
             <div
-              className="indicator card mx-6 mb-10 w-full max-w-xl bg-base-100 shadow-xl"
+              className="card indicator mx-6 mb-10 w-full max-w-xl bg-base-100 shadow-xl"
               key={item.id}
             >
               <div className="indicator-item">
