@@ -16,7 +16,7 @@ module.exports = {
       // "cmyk",
       // "autumn",
       // "lemonade",
-      // "winter",
+      "winter",
     ],
   },
 };

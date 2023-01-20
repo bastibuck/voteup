@@ -7,15 +7,21 @@
 
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLocalStorage } from "react-use";
 
 import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
 import type { Group } from "@prisma/client";
+
+const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
+  ssr: false,
+});
 
 type GroupProps = {
   serverSideGroup: Group;
@@ -32,6 +38,11 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
       utils.group.getById.invalidate(serverSideGroup.id);
     },
   });
+
+  const [votes, setVotes] = useLocalStorage<Array<string>>(
+    serverSideGroup.id,
+    []
+  );
 
   const upvoteItemMutation = api.item.voteUpById.useMutation({
     onError(error) {
@@ -64,7 +75,18 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
     reset();
   });
 
-  const handleUpvote = (id: string) => upvoteItemMutation.mutate(id);
+  const persistVote = (id: string) => {
+    setVotes([...(votes ?? []), id]);
+  };
+
+  const handleUpvote = (id: string) => {
+    upvoteItemMutation.mutate(id);
+    persistVote(id);
+  };
+
+  const hasBeenVotedFor = (id: string): boolean => {
+    return votes?.includes(id) ?? false;
+  };
 
   if (group.isLoading || !group.data) {
     return (
@@ -103,20 +125,21 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <div className="grid place-items-center px-6">
           {group.data.items.map((item) => (
             <div
-              className="card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+              className="indicator card mx-6 mb-10 w-full max-w-xl bg-base-100 shadow-xl"
               key={item.id}
             >
-              <div className="card-body">
-                <p className="m-0">{item.text}</p>
+              <div className="indicator-item">
+                <UpVoteButton
+                  onClick={() => handleUpvote(item.id)}
+                  hasBeenVotedFor={hasBeenVotedFor(item.id)}
+                />
+              </div>
 
-                <div className="card-actions justify-end">
-                  <button
-                    className="btn gap-2"
-                    onClick={() => handleUpvote(item.id)}
-                  >
-                    {item.votes} Votes
-                    <div className="badge-primary badge">+1</div>
-                  </button>
+              <div className="card-body flex flex-row items-baseline justify-between">
+                <div className="m-0">{item.text}</div>
+
+                <div className="badge-outline badge badge-lg shrink-0">
+                  {item.votes} votes
                 </div>
               </div>
             </div>
@@ -187,7 +210,11 @@ export const getServerSideProps: GetServerSideProps<GroupProps> = async (
         id: groupId,
       },
       include: {
-        items: true,
+        items: {
+          orderBy: {
+            votes: "desc",
+          },
+        },
       },
     });
 

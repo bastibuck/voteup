@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const groupRouter = createTRPCRouter({
   getById: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.group.findFirst({
+    return ctx.prisma.group.findFirstOrThrow({
       where: {
         id: input,
       },
