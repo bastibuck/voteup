@@ -152,7 +152,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         />
       </Head>
 
-      <main className="items-start bg-base-200">
+      <main className="min-h-screen items-start">
         <div className="hero">
           <div className="hero-content pt-12 text-center">
             <div className="max-w-md">
