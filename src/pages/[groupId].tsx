@@ -25,6 +25,7 @@ import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
 import type { Group } from "@prisma/client";
+import Balancer from "react-wrap-balancer";
 
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
@@ -193,7 +194,9 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         <div className="hero">
           <div className="hero-content pt-12 text-center">
             <div className="max-w-md">
-              <h1 className="mb-0 text-5xl font-bold">{group.data.name}</h1>
+              <h1 className="mb-0 text-5xl font-bold">
+                <Balancer>{group.data.name}</Balancer>
+              </h1>
               <p>{group.data.description}</p>
             </div>
           </div>
