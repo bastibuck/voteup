@@ -8,16 +8,43 @@ import { z } from "zod";
 export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  STALE_AFTER_DAYS: z
+    .string()
+    .min(1)
+    .transform((val, ctx) => {
+      const parsed = parseInt(val);
+
+      if (isNaN(parsed)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Not a number",
+        });
+
+        return z.NEVER;
+      }
+
+      if (parsed <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Stale days can not be less than or equal to 0",
+        });
+
+        return z.NEVER;
+      }
+
+      return parsed;
+    }),
 });
 
 /**
  * You can't destruct `process.env` as a regular object in the Next.js
  * middleware, so you have to do it manually here.
- * @type {{ [k in keyof z.infer<typeof serverSchema>]: z.infer<typeof serverSchema>[k] | undefined }}
+ * @type {{ [k in keyof z.input<typeof serverSchema>]: z.input<typeof serverSchema>[k] | undefined }}
  */
 export const serverEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
+  STALE_AFTER_DAYS: process.env.STALE_AFTER_DAYS,
 };
 
 /**

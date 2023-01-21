@@ -24,6 +24,6 @@ model Item {
     createdAt DateTime @default(now())
     text      String
     votes     Int      @default(0)
-    group     Group    @relation(fields: [groupId], references: [id])
+    group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
     groupId   String   @db.ObjectId
 }
