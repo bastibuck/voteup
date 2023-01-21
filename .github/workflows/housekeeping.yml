@@ -2,7 +2,7 @@ name: Housekeeping CRON jobs
 
 on:
   schedule:
-    - cron: "54 15 * * *"
+    - cron: "45 3 * * *"
 
 jobs:
   trigger-daily:
