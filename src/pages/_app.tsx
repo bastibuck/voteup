@@ -1,4 +1,5 @@
 import { type AppType } from "next/app";
+import Head from "next/head";
 
 import { api } from "../utils/api";
 
@@ -7,13 +8,22 @@ import Footer from "../components/Footer";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <div className="prose-lg prose max-w-none">
-      <div className="min-h-screen bg-base-200">
-        <Component {...pageProps} />
-      </div>
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
 
-      <Footer />
-    </div>
+      <div className="prose-lg prose max-w-none">
+        <div className="min-h-screen bg-base-200">
+          <Component {...pageProps} />
+        </div>
+
+        <Footer />
+      </div>
+    </>
   );
 };
 

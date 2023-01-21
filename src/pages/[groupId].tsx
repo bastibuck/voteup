@@ -195,7 +195,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
-                className="card indicator mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+                className="indicator card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
                 key={item.id}
                 layout
               >
