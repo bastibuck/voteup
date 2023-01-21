@@ -31,7 +31,7 @@ const Footer = () => {
             className="text-neutral-content hover:text-accent"
             target="_blank"
             rel="noreferrer"
-            href="https://github.com/bastibuck/voteup"
+            href="https://github.com/bastibuck"
           >
             <AiOutlineGithub className="text-3xl" />
           </a>
