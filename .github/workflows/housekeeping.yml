@@ -1,0 +1,13 @@
+name: Housekeeping CRON jobs
+
+on:
+  schedule:
+    - cron: "45 3 * * *"
+
+jobs:
+  trigger-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        run: |
+          curl --request GET --url '${{secrets.HOUSEKEEPING_URL}}'
