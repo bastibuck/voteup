@@ -37,9 +37,11 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Voteup | Vote for items in a group</title>
-        <meta name="description" content="Gather and vote items in a group" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>VoteUp</title>
+        <meta
+          name="description"
+          content="Gather and vote for items in a group"
+        />
       </Head>
 
       <main className="hero min-h-screen bg-base-200">
