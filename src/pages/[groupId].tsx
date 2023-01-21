@@ -141,7 +141,6 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
       <Head>
         <title>{`${group.data.name} | VoteUp`}</title>
         <meta name="description" content="Gather and vote items in a group" />
-        <link rel="icon" href="/favicon.ico" />
 
         <meta
           property="og:image"
