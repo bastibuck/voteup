@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { z } from "zod";
@@ -153,36 +154,46 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
       </Head>
 
       <main className="min-h-screen items-start">
+        <div className="breadcrumbs text-sm">
+          <ul>
+            <li>
+              <Link href="/">VoteUp</Link>
+            </li>
+
+            <li>
+              <span className="mr-2">{group.data.name}</span>
+              <span
+                className={`tooltip tooltip-bottom sm:tooltip-right ${
+                  tooltipVisible ? "tooltip-open tooltip-success" : ""
+                }`}
+                data-tip={
+                  tooltipVisible
+                    ? "Link copied to clipboard"
+                    : "Copy link to clipboard"
+                }
+              >
+                <button
+                  disabled={tooltipVisible}
+                  className={`text-xl ${
+                    tooltipVisible ? "text-success" : "text-primary"
+                  }`}
+                  onClick={copyUrlToClipboard}
+                >
+                  {tooltipVisible ? (
+                    <HiOutlineClipboardDocumentCheck />
+                  ) : (
+                    <HiOutlineClipboardDocumentList />
+                  )}
+                </button>
+              </span>
+            </li>
+          </ul>
+        </div>
+
         <div className="hero">
           <div className="hero-content pt-12 text-center">
             <div className="max-w-md">
-              <div className="flex items-baseline gap-4">
-                <h1 className="text-5xl font-bold">{group.data.name} </h1>
-                <div
-                  className={`tooltip tooltip-right ${
-                    tooltipVisible ? "tooltip-open tooltip-success" : ""
-                  }`}
-                  data-tip={
-                    tooltipVisible
-                      ? "Link copied to clipboard"
-                      : "Copy link to clipboard"
-                  }
-                >
-                  <button
-                    disabled={tooltipVisible}
-                    className={`text-2xl ${
-                      tooltipVisible ? "text-success" : "text-primary"
-                    }`}
-                    onClick={copyUrlToClipboard}
-                  >
-                    {tooltipVisible ? (
-                      <HiOutlineClipboardDocumentCheck />
-                    ) : (
-                      <HiOutlineClipboardDocumentList />
-                    )}
-                  </button>
-                </div>
-              </div>
+              <h1 className="mb-0 text-5xl font-bold">{group.data.name}</h1>
               <p>{group.data.description}</p>
             </div>
           </div>
@@ -217,8 +228,8 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
           </AnimatePresence>
         </div>
 
-        <div className="grid place-items-center px-6 pb-6">
-          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl">
+        <div className="grid place-items-center px-6 pb-24">
+          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-xl">
             <form onSubmit={onSubmit} className="card-body">
               <h2 className="card-title m-0">Create item</h2>
 

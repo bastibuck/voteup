@@ -55,7 +55,7 @@ const Home: NextPage = () => {
             <p>Create a group and share the invite link to start voting 🚀.</p>
           </div>
 
-          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-2xl">
+          <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-xl">
             <form onSubmit={onSubmit} className="card-body">
               <div className="form-control">
                 <label className="label">
