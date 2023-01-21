@@ -36,7 +36,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
 
       <div className="prose-lg prose max-w-none">
-        <div className="min-h-screen bg-base-200">
+        <div className="bg-base-200">
           <Component {...pageProps} />
         </div>
 
