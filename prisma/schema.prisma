@@ -12,6 +12,7 @@ datasource db {
 
 model Group {
     id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    groupId     String
     createdAt   DateTime @default(now())
     lastVote    DateTime @default(now())
     name        String
@@ -23,6 +24,7 @@ model Item {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     createdAt DateTime @default(now())
     text      String
+    creator   String
     votes     Int      @default(0)
     group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
     groupId   String   @db.ObjectId

@@ -27,6 +27,10 @@ import { prisma } from "../server/db";
 import type { Group } from "@prisma/client";
 import Balancer from "react-wrap-balancer";
 
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+TimeAgo.addDefaultLocale(en);
+
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
 });
@@ -121,6 +125,8 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
   const copyUrlToClipboard = () => {
     copyToClipboard(window.location.href);
   };
+
+  const timeAgo = new TimeAgo("en-US");
 
   if (group.isLoading || !group.data) {
     return (
@@ -221,7 +227,17 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
                 <div className="card-body">
                   <div className="m-0">{item.text}</div>
 
-                  <div className="card-actions justify-end">
+                  <div className="card-actions min-h-12 items-end justify-between align-bottom">
+                    <div className="m-0 text-sm text-base-300">
+                      <span
+                        className={"tooltip tooltip-top"}
+                        data-tip={item.createdAt.toLocaleString("en-US")}
+                      >
+                        Created {timeAgo.format(item.createdAt)} by{" "}
+                        {item.creator}
+                      </span>
+                    </div>
+
                     <UpVoteButton
                       onClick={() => handleUpvote(item.id)}
                       hasBeenVotedFor={hasBeenVotedFor(item.id)}
@@ -255,6 +271,25 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
                 {errors.text ? (
                   <span className="label-text-alt label text-red-700">
                     {errors.text.message}
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Your name</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  className="input-bordered input"
+                  disabled={createItemMutation.isLoading}
+                  {...register("creator")}
+                />
+
+                {errors.creator ? (
+                  <span className="label-text-alt label text-red-700">
+                    {errors.creator.message}
                   </span>
                 ) : null}
               </div>
@@ -294,7 +329,7 @@ export const getServerSideProps: GetServerSideProps<GroupProps> = async (
 
     const serverSideGroup = await prisma.group.findFirstOrThrow({
       where: {
-        id: groupId,
+        groupId,
       },
       include: {
         items: {
