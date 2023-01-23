@@ -198,8 +198,8 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
         </div>
 
         <div className="hero">
-          <div className="hero-content pt-12 text-center">
-            <div className="max-w-md">
+          <div className="hero-content w-full pt-12 text-center">
+            <div className="w-full max-w-md">
               <h1 className="mb-0 text-5xl font-bold">
                 <Balancer>{group.data.name}</Balancer>
               </h1>
