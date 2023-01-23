@@ -213,17 +213,19 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
                 layout
               >
                 <div className="indicator-item">
-                  <UpVoteButton
-                    onClick={() => handleUpvote(item.id)}
-                    hasBeenVotedFor={hasBeenVotedFor(item.id)}
-                  />
+                  <div className="btn-accent btn-active no-animation btn-sm btn cursor-default text-white">
+                    {item.votes}
+                  </div>
                 </div>
 
-                <div className="card-body flex flex-row items-baseline justify-between">
+                <div className="card-body">
                   <div className="m-0">{item.text}</div>
 
-                  <div className="badge-outline badge badge-lg shrink-0">
-                    {item.votes} votes
+                  <div className="card-actions justify-end">
+                    <UpVoteButton
+                      onClick={() => handleUpvote(item.id)}
+                      hasBeenVotedFor={hasBeenVotedFor(item.id)}
+                    />
                   </div>
                 </div>
               </motion.div>
