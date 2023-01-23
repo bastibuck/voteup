@@ -9,8 +9,8 @@ const UpVoteButton: React.FC<{
   }
 
   return (
-    <button className="btn-accent btn-square btn-sm btn" onClick={onClick}>
-      +1
+    <button className="btn-primary btn-sm btn" onClick={onClick}>
+      Vote 👍
     </button>
   );
 };
