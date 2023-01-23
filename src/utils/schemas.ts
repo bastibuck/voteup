@@ -8,4 +8,5 @@ export const NewGroupSchema = z.object({
 export const NewItemSchema = z.object({
   group: z.string(),
   text: z.string().min(3, "Text must contain at least 3 characters"),
+  creator: z.string().optional(),
 });

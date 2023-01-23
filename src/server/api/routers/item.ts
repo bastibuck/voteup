@@ -36,6 +36,7 @@ export const itemRouter = createTRPCRouter({
       return ctx.prisma.item.create({
         data: {
           text: input.text,
+          creator: input.creator || "anonymous",
           group: {
             connect: {
               id: group.id,

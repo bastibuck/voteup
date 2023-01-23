@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 
   const createGroupMutation = api.group.create.useMutation({
     async onSuccess(data) {
-      await router.push(`/${data.id}`);
+      await router.push(`/${data.groupId}`);
     },
     onError(error) {
       console.error(error);
