@@ -1,5 +1,10 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { NewItemSchema } from "../../../utils/schemas";
+import {
+  DeleteItemSchema,
+  NewItemSchema,
+  VoteItemSchema,
+} from "../../../utils/schemas";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -37,6 +42,7 @@ export const itemRouter = createTRPCRouter({
         data: {
           text: input.text,
           creator: input.creator || "anonymous",
+          admin: input.admin,
           group: {
             connect: {
               id: group.id,
@@ -50,11 +56,11 @@ export const itemRouter = createTRPCRouter({
     }),
 
   voteUpById: publicProcedure
-    .input(z.string())
+    .input(VoteItemSchema)
     .mutation(async ({ input, ctx }) => {
       const item = await ctx.prisma.item.findFirstOrThrow({
         where: {
-          id: input,
+          id: input.itemId,
         },
       });
 
@@ -69,12 +75,41 @@ export const itemRouter = createTRPCRouter({
 
       return ctx.prisma.item.update({
         where: {
-          id: input,
+          id: input.itemId,
         },
         data: {
           votes: {
-            increment: 1,
+            push: input.user,
           },
+        },
+      });
+    }),
+
+  deleteById: publicProcedure
+    .input(DeleteItemSchema)
+    .mutation(async ({ input, ctx }) => {
+      const item = await ctx.prisma.item.findFirstOrThrow({
+        where: {
+          id: input.itemId,
+        },
+      });
+
+      if (item.admin !== input.admin) {
+        throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      await ctx.prisma.group.update({
+        where: {
+          id: item.groupId,
+        },
+        data: {
+          lastVote: new Date(),
+        },
+      });
+
+      return ctx.prisma.item.delete({
+        where: {
+          id: input.itemId,
         },
       });
     }),

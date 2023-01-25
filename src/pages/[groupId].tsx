@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCopyToClipboard, useLocalStorage } from "react-use";
+import { useCopyToClipboard } from "react-use";
 import {
   HiOutlineClipboardDocumentList,
   HiOutlineClipboardDocumentCheck,
@@ -24,11 +24,12 @@ import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
-import type { Group } from "@prisma/client";
+import type { Group, Item } from "@prisma/client";
 import Balancer from "react-wrap-balancer";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { useUser } from "../hooks/useUser";
 TimeAgo.addDefaultLocale(en);
 
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
@@ -41,6 +42,7 @@ type GroupProps = {
 
 const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
+  const userId = useUser();
 
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
@@ -52,11 +54,6 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
       utils.group.getById.invalidate(serverSideGroup.id);
     },
   });
-
-  const [votes, setVotes] = useLocalStorage<Array<string>>(
-    serverSideGroup.id,
-    []
-  );
 
   const [copyResult, copyToClipboard] = useCopyToClipboard();
 
@@ -96,6 +93,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
     resolver: zodResolver(NewItemSchema),
     defaultValues: {
       group: serverSideGroup.id,
+      admin: userId,
     },
   });
 
@@ -109,17 +107,12 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
     reset();
   });
 
-  const persistVote = (id: string) => {
-    setVotes([...(votes ?? []), id]);
-  };
-
   const handleUpvote = (id: string) => {
-    upvoteItemMutation.mutate(id);
-    persistVote(id);
+    upvoteItemMutation.mutate({ itemId: id, user: userId });
   };
 
-  const hasBeenVotedFor = (id: string): boolean => {
-    return votes?.includes(id) ?? false;
+  const hasBeenVotedFor = (item: Item): boolean => {
+    return item.votes.includes(userId);
   };
 
   const copyUrlToClipboard = () => {
@@ -220,7 +213,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
               >
                 <div className="indicator-item">
                   <div className="btn-accent btn-active no-animation btn-sm btn cursor-default text-white">
-                    {item.votes}
+                    {item.voteCount}
                   </div>
                 </div>
 
@@ -240,7 +233,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
 
                     <UpVoteButton
                       onClick={() => handleUpvote(item.id)}
-                      hasBeenVotedFor={hasBeenVotedFor(item.id)}
+                      hasBeenVotedFor={hasBeenVotedFor(item)}
                     />
                   </div>
                 </div>

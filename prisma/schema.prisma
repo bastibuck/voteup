@@ -18,6 +18,7 @@ model Group {
     name        String
     description String?
     items       Item[]
+    admin       String
 }
 
 model Item {
@@ -25,7 +26,8 @@ model Item {
     createdAt DateTime @default(now())
     text      String
     creator   String
-    votes     Int      @default(0)
+    admin     String
+    votes     String[] @default([])
     group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
     groupId   String   @db.ObjectId
 }

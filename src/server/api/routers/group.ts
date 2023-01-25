@@ -5,19 +5,23 @@ import { NewGroupSchema } from "../../../utils/schemas";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const groupRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.group.findFirstOrThrow({
+  getById: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    const group = await ctx.prisma.group.findFirstOrThrow({
       where: {
         id: input,
       },
       include: {
-        items: {
-          orderBy: {
-            votes: "desc",
-          },
-        },
+        items: true,
       },
     });
+
+    return {
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        voteCount: item.votes.length,
+      })),
+    };
   }),
 
   create: publicProcedure.input(NewGroupSchema).mutation(({ input, ctx }) => {
@@ -26,6 +30,7 @@ export const groupRouter = createTRPCRouter({
         name: input.name,
         description: input.description,
         groupId: generateId(10),
+        admin: input.admin,
       },
       select: {
         groupId: true,
