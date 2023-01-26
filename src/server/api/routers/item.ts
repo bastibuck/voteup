@@ -87,9 +87,16 @@ export const itemRouter = createTRPCRouter({
         where: {
           id: input.itemId,
         },
+        include: {
+          group: {
+            select: {
+              admin: true,
+            },
+          },
+        },
       });
 
-      if (item.admin !== input.admin) {
+      if (item.admin !== input.admin && item.group.admin !== input.admin) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Not allowed to delete item",
@@ -108,6 +115,9 @@ export const itemRouter = createTRPCRouter({
       return ctx.prisma.item.delete({
         where: {
           id: input.itemId,
+        },
+        select: {
+          id: true,
         },
       });
     }),

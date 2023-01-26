@@ -40,6 +40,10 @@ const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
 });
 
+const DeleteButton = dynamic(() => import("../components/DeleteButton"), {
+  ssr: false,
+});
+
 const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
   const userId = useUser();
@@ -51,7 +55,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate(serverSideGroup.id);
+      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
     },
   });
 
@@ -80,7 +84,16 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate(serverSideGroup.id);
+      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
+    },
+  });
+
+  const deleteItemMutation = api.item.deleteById.useMutation({
+    onError(error) {
+      console.error(error);
+    },
+    onSettled() {
+      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
     },
   });
 
@@ -97,10 +110,13 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
     },
   });
 
-  const group = api.group.getById.useQuery(serverSideGroup.id, {
-    initialData: serverSideGroup,
-    refetchInterval: 5000,
-  });
+  const group = api.group.getById.useQuery(
+    { groupId: serverSideGroup.id, userId },
+    {
+      initialData: serverSideGroup,
+      refetchInterval: 5000,
+    }
+  );
 
   const onSubmit = handleSubmit((data) => {
     createItemMutation.mutate(data);
@@ -109,6 +125,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
 
   const handleUpvote = (id: string) => {
     upvoteItemMutation.mutate({ itemId: id, user: userId });
+  };
+
+  const handleDelete = (id: string) => {
+    deleteItemMutation.mutate({ itemId: id, admin: userId });
   };
 
   const copyUrlToClipboard = () => {
@@ -201,9 +221,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
           <AnimatePresence initial={false}>
             {group.data.items.map((item) => (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                className="indicator card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
+                initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+                animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
+                exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+                className="group indicator card mx-6 w-full max-w-xl bg-base-100 shadow-xl"
                 key={item.id}
                 layout
               >
@@ -214,7 +235,13 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                 </div>
 
                 <div className="card-body">
-                  <div className="m-0">{item.text}</div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="m-0">{item.text}</h3>
+                    <DeleteButton
+                      onClick={() => handleDelete(item.id)}
+                      visible={group.data.isAdmin || item.isCreator}
+                    />
+                  </div>
 
                   <div className="card-actions min-h-12 items-end justify-between align-bottom">
                     <div className="m-0 text-sm text-base-300">
@@ -229,7 +256,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
 
                     <UpVoteButton
                       onClick={() => handleUpvote(item.id)}
-                      visible={item.votes.includes(userId)}
+                      visible={!item.votes.includes(userId)}
                     />
                   </div>
                 </div>
@@ -238,7 +265,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
           </AnimatePresence>
         </div>
 
-        <div className="grid place-items-center px-6 pb-24">
+        <motion.div layout className="grid place-items-center px-6 pb-24">
           <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-xl">
             <form onSubmit={onSubmit} className="card-body">
               <h2 className="card-title m-0">Create item</h2>
@@ -298,7 +325,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
               </div>
             </form>
           </div>
-        </div>
+        </motion.div>
       </main>
     </>
   );
