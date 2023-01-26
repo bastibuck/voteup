@@ -265,7 +265,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
           </AnimatePresence>
         </div>
 
-        <motion.div layout className="grid place-items-center px-6 pb-24">
+        <motion.div
+          layout="position"
+          className="grid place-items-center px-6 pb-24"
+        >
           <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-xl">
             <form onSubmit={onSubmit} className="card-body">
               <h2 className="card-title m-0">Create item</h2>
