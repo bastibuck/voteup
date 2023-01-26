@@ -1,5 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import {
   DeleteItemSchema,
   NewItemSchema,
@@ -9,17 +8,6 @@ import {
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const itemRouter = createTRPCRouter({
-  getAllByGroupId: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.group.findFirst({
-      where: {
-        id: input,
-      },
-      include: {
-        items: true,
-      },
-    });
-  }),
-
   create: publicProcedure
     .input(NewItemSchema)
     .mutation(async ({ input, ctx }) => {
@@ -64,6 +52,13 @@ export const itemRouter = createTRPCRouter({
         },
       });
 
+      if (item.votes.includes(input.user)) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already voted for this item",
+        });
+      }
+
       await ctx.prisma.group.update({
         where: {
           id: item.groupId,
@@ -95,7 +90,10 @@ export const itemRouter = createTRPCRouter({
       });
 
       if (item.admin !== input.admin) {
-        throw new TRPCError({ code: "FORBIDDEN" });
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not allowed to delete item",
+        });
       }
 
       await ctx.prisma.group.update({
