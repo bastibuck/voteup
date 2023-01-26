@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { generateId } from "../../../utils/id";
 import { NewGroupSchema } from "../../../utils/schemas";
+import { publicGroupSelect } from "../../../utils/selectors";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -10,9 +11,7 @@ export const groupRouter = createTRPCRouter({
       where: {
         id: input,
       },
-      include: {
-        items: true,
-      },
+      select: publicGroupSelect,
     });
 
     return {

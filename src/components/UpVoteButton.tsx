@@ -1,10 +1,10 @@
 import React from "react";
 
 const UpVoteButton: React.FC<{
-  hasBeenVotedFor: boolean;
+  visible: boolean;
   onClick: () => void;
-}> = ({ hasBeenVotedFor, onClick }) => {
-  if (hasBeenVotedFor) {
+}> = ({ visible, onClick }) => {
+  if (!visible) {
     return null;
   }
 

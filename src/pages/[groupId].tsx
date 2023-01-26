@@ -6,7 +6,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { useEffect, useState } from "react";
-import type { GetServerSideProps, NextPage } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Link from "next/link";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -24,23 +28,19 @@ import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
-import type { Group, Item } from "@prisma/client";
 import Balancer from "react-wrap-balancer";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useUser } from "../hooks/useUser";
+import { publicGroupSelect } from "../utils/selectors";
 TimeAgo.addDefaultLocale(en);
 
 const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
   ssr: false,
 });
 
-type GroupProps = {
-  serverSideGroup: Group;
-};
-
-const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
+const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
   const userId = useUser();
 
@@ -109,10 +109,6 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
 
   const handleUpvote = (id: string) => {
     upvoteItemMutation.mutate({ itemId: id, user: userId });
-  };
-
-  const hasBeenVotedFor = (item: Item): boolean => {
-    return item.votes.includes(userId);
   };
 
   const copyUrlToClipboard = () => {
@@ -233,7 +229,7 @@ const GroupPage: NextPage<GroupProps> = ({ serverSideGroup }) => {
 
                     <UpVoteButton
                       onClick={() => handleUpvote(item.id)}
-                      hasBeenVotedFor={hasBeenVotedFor(item)}
+                      visible={item.votes.includes(userId)}
                     />
                   </div>
                 </div>
@@ -314,8 +310,10 @@ const GroupPropsSchema = z.object({
   groupId: z.string(),
 });
 
-export const getServerSideProps: GetServerSideProps<GroupProps> = async (
-  context
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
 ) => {
   try {
     const { groupId } = GroupPropsSchema.parse(context.query);
@@ -324,13 +322,7 @@ export const getServerSideProps: GetServerSideProps<GroupProps> = async (
       where: {
         groupId,
       },
-      include: {
-        items: {
-          orderBy: {
-            votes: "desc",
-          },
-        },
-      },
+      select: publicGroupSelect,
     });
 
     return {
