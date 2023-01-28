@@ -1,20 +1,13 @@
-import { z } from "zod";
-import { NewItemSchema } from "../../../utils/schemas";
+import { TRPCError } from "@trpc/server";
+import {
+  DeleteItemSchema,
+  NewItemSchema,
+  VoteItemSchema,
+} from "../../../utils/schemas";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const itemRouter = createTRPCRouter({
-  getAllByGroupId: publicProcedure.input(z.string()).query(({ input, ctx }) => {
-    return ctx.prisma.group.findFirst({
-      where: {
-        id: input,
-      },
-      include: {
-        items: true,
-      },
-    });
-  }),
-
   create: publicProcedure
     .input(NewItemSchema)
     .mutation(async ({ input, ctx }) => {
@@ -37,6 +30,7 @@ export const itemRouter = createTRPCRouter({
         data: {
           text: input.text,
           creator: input.creator || "anonymous",
+          admin: input.admin,
           group: {
             connect: {
               id: group.id,
@@ -50,13 +44,20 @@ export const itemRouter = createTRPCRouter({
     }),
 
   voteUpById: publicProcedure
-    .input(z.string())
+    .input(VoteItemSchema)
     .mutation(async ({ input, ctx }) => {
       const item = await ctx.prisma.item.findFirstOrThrow({
         where: {
-          id: input,
+          id: input.itemId,
         },
       });
+
+      if (item.votes.includes(input.user)) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already voted for this item",
+        });
+      }
 
       await ctx.prisma.group.update({
         where: {
@@ -69,12 +70,54 @@ export const itemRouter = createTRPCRouter({
 
       return ctx.prisma.item.update({
         where: {
-          id: input,
+          id: input.itemId,
         },
         data: {
           votes: {
-            increment: 1,
+            push: input.user,
           },
+        },
+      });
+    }),
+
+  deleteById: publicProcedure
+    .input(DeleteItemSchema)
+    .mutation(async ({ input, ctx }) => {
+      const item = await ctx.prisma.item.findFirstOrThrow({
+        where: {
+          id: input.itemId,
+        },
+        include: {
+          group: {
+            select: {
+              admin: true,
+            },
+          },
+        },
+      });
+
+      if (item.admin !== input.admin && item.group.admin !== input.admin) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not allowed to delete item",
+        });
+      }
+
+      await ctx.prisma.group.update({
+        where: {
+          id: item.groupId,
+        },
+        data: {
+          lastVote: new Date(),
+        },
+      });
+
+      return ctx.prisma.item.delete({
+        where: {
+          id: input.itemId,
+        },
+        select: {
+          id: true,
         },
       });
     }),

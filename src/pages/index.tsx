@@ -9,9 +9,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../utils/api";
 import { NewGroupSchema } from "../utils/schemas";
 import { useRouter } from "next/router";
+import { useUser } from "../hooks/useUser";
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const userId = useUser();
 
   const createGroupMutation = api.group.create.useMutation({
     async onSuccess(data) {
@@ -28,6 +30,9 @@ const Home: NextPage = () => {
     formState: { errors },
   } = useForm<z.infer<typeof NewGroupSchema>>({
     resolver: zodResolver(NewGroupSchema),
+    defaultValues: {
+      admin: userId,
+    },
   });
 
   const onSubmit = handleSubmit((data) => {

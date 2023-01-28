@@ -1,0 +1,25 @@
+name: Update existing data to match new schema
+
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+
+jobs:
+  migrate-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: npm ci
+
+      - run: npm run migration:run
+
+      - name: Remove migration files
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "prisma/migrations"
+          message: "Remove migration files for commit '${{ github.event.head_commit.message }}'"
