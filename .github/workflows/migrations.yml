@@ -16,7 +16,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run migration:dev
+      - run: npm run migration:run
 
       - name: Remove migration files
         uses: EndBug/add-and-commit@v9
