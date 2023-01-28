@@ -1,10 +1,9 @@
 name: Update existing data to match new schema
 
 on:
-  # push:
-  #   branches:
-  #     - "main"
-  workflow_dispatch:
+  push:
+    branches:
+      - "feature/admin-features"
 
 jobs:
   migrate-data:
