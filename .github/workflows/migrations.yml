@@ -5,6 +5,9 @@ on:
     branches:
       - "feature/admin-features"
 
+env:
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+
 jobs:
   migrate-data:
     runs-on: ubuntu-latest
