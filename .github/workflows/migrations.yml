@@ -3,7 +3,7 @@ name: Update existing data to match new schema
 on:
   push:
     branches:
-      - "feature/admin-features"
+      - "main"
 
 env:
   DATABASE_URL: ${{ vars.DATABASE_URL }}
