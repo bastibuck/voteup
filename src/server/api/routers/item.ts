@@ -103,6 +103,14 @@ export const itemRouter = createTRPCRouter({
         });
       }
 
+      // don't allow deleting un-administered items
+      if (item.admin === "NO_ADMIN") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not allowed to delete item",
+        });
+      }
+
       await ctx.prisma.group.update({
         where: {
           id: item.groupId,

@@ -24,3 +24,12 @@ export const DeleteItemSchema = z.object({
   itemId: z.string(),
   admin: USER_SCHEMA,
 });
+
+export const UserGroupsSchema = z.object({
+  admin: USER_SCHEMA,
+});
+
+export const DeleteGroupSchema = z.object({
+  groupId: z.string(),
+  admin: USER_SCHEMA,
+});
