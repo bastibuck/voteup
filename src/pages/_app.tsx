@@ -1,12 +1,23 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { type AppType } from "next/app";
 import Head from "next/head";
 
 import { api } from "../utils/api";
 
-import "../styles/globals.css";
 import Footer from "../components/Footer";
+import UserMenu from "../components/UserMenu";
+
+import "../styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    document.activeElement instanceof HTMLElement &&
+      document.activeElement.blur();
+  }, [router]);
+
   return (
     <>
       <Head>
@@ -37,6 +48,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
       <div className="prose-lg prose max-w-none">
         <div className="bg-base-200">
+          <UserMenu />
           <Component {...pageProps} />
         </div>
 
