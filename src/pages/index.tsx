@@ -63,7 +63,7 @@ const Home: NextPage = () => {
           <div className="card w-full max-w-sm flex-shrink-0 bg-base-100 shadow-xl">
             <form onSubmit={onSubmit} className="card-body">
               <div className="form-control">
-                <label className="label">
+                <label className="label" htmlFor="name">
                   <span className="label-text">
                     Name <span className="text-red-800">*</span>
                   </span>
@@ -73,6 +73,7 @@ const Home: NextPage = () => {
                   placeholder="Group name"
                   className="input-bordered input"
                   disabled={createGroupMutation.isLoading}
+                  id="name"
                   {...register("name")}
                 />
 
@@ -84,13 +85,14 @@ const Home: NextPage = () => {
               </div>
 
               <div className="form-control">
-                <label className="label">
+                <label className="label" htmlFor="description">
                   <span className="label-text">Description</span>
                 </label>
                 <textarea
                   placeholder="Add a useful description"
                   className="textarea-bordered textarea"
                   disabled={createGroupMutation.isLoading}
+                  id="description"
                   {...register("description")}
                 />
               </div>

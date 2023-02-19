@@ -14,6 +14,7 @@
 // ***********************************************************
 
 import "@testing-library/cypress/add-commands";
+import "cypress-real-events";
 
 // Import commands.js using ES2015 syntax:
 import "./commands";

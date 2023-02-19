@@ -55,7 +55,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
+      utils.group.getById.invalidate({
+        groupId: serverSideGroup.groupId,
+        userId,
+      });
     },
   });
 
@@ -200,6 +203,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                     tooltipVisible ? "text-success" : "text-primary"
                   }`}
                   onClick={copyUrlToClipboard}
+                  aria-label="Copy link to clipboard"
                 >
                   {tooltipVisible ? (
                     <HiOutlineClipboardDocumentCheck />
