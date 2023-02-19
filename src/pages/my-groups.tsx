@@ -99,13 +99,13 @@ const MyGroupsPage: NextPage = ({}) => {
           {myGroups.data.map((group) => (
             <div
               className="group card mx-6 mb-6 w-full max-w-xl bg-base-100 shadow-xl"
-              key={group.id}
+              key={group.groupId}
             >
               <div className="card-body">
                 <div className="flex items-center gap-2">
                   <h3 className="m-0">{group.name}</h3>
                   <DeleteButton
-                    onClick={() => handleDelete(group.id)}
+                    onClick={() => handleDelete(group.groupId)}
                     visible={true}
                   />
                 </div>

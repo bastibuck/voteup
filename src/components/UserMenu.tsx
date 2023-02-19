@@ -4,10 +4,11 @@ import { CiUser } from "react-icons/ci";
 
 const UserMenu = () => {
   return (
-    <div className="dropdown-end not-prose group dropdown absolute top-4 right-4">
+    <div className="not-prose group dropdown-end dropdown absolute top-4 right-4">
       <label
         tabIndex={0}
         className="btn-ghost btn rounded-none group-focus-within:bg-base-100 group-focus-within:shadow"
+        aria-label="User menu"
       >
         <CiUser className="text-2xl" />
       </label>
