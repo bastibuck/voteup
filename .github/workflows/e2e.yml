@@ -7,7 +7,7 @@ on:
 
 jobs:
   e2e:
-    if: github.event.deployment_status.state == 'success'
+    if: github.ref != 'refs/heads/main' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

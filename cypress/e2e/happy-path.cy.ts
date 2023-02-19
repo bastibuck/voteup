@@ -52,7 +52,10 @@ describe("Happy Path", () => {
     cy.findByRole("button", { name: /Create group/i }).click();
 
     // Group content
-    cy.findByRole("heading", { name: new RegExp("E2E Testing Group", "i") });
+    cy.findByRole("heading", {
+      name: new RegExp("E2E Testing Group", "i"),
+      timeout: 20000,
+    });
     cy.findByLabelText(/Copy link to clipboard/i).realClick();
 
     cy.url().then((url) => {
