@@ -84,7 +84,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
+      utils.group.getById.invalidate({
+        groupId: serverSideGroup.groupId,
+        userId,
+      });
     },
   });
 
@@ -93,7 +96,10 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
       console.error(error);
     },
     onSettled() {
-      utils.group.getById.invalidate({ groupId: serverSideGroup.id, userId });
+      utils.group.getById.invalidate({
+        groupId: serverSideGroup.groupId,
+        userId,
+      });
     },
   });
 
@@ -105,13 +111,13 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
   } = useForm<z.infer<typeof NewItemSchema>>({
     resolver: zodResolver(NewItemSchema),
     defaultValues: {
-      group: serverSideGroup.id,
+      group: serverSideGroup.groupId,
       admin: userId,
     },
   });
 
   const group = api.group.getById.useQuery(
-    { groupId: serverSideGroup.id, userId },
+    { groupId: serverSideGroup.groupId, userId },
     {
       initialData: serverSideGroup,
       refetchInterval: 5000,

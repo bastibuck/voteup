@@ -16,7 +16,7 @@ export const groupRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { admin, ...group } = await ctx.prisma.group.findFirstOrThrow({
         where: {
-          id: input.groupId,
+          groupId: input.groupId,
         },
         select: {
           ...publicGroupSelect,
@@ -71,7 +71,7 @@ export const groupRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const group = await ctx.prisma.group.findFirstOrThrow({
         where: {
-          id: input.groupId,
+          groupId: input.groupId,
         },
       });
 
@@ -92,7 +92,7 @@ export const groupRouter = createTRPCRouter({
 
       return ctx.prisma.group.delete({
         where: {
-          id: input.groupId,
+          id: group.id,
         },
         select: {
           id: true,

@@ -13,7 +13,7 @@ export const itemRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const group = await ctx.prisma.group.findFirstOrThrow({
         where: {
-          id: input.group,
+          groupId: input.group,
         },
       });
 
