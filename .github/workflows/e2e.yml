@@ -13,10 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Test
-        run: echo ${{github.event.deployment_status.target_url}}
-
-      # - name: Run Cypress
-      #   uses: cypress-io/github-action@v5
-      #   with:
-      #     config: baseUrl=${{ github.event.deployment_status.target_url }}
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5
+        with:
+          config: baseUrl=${{ github.event.deployment_status.target_url }}

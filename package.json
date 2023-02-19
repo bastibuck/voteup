@@ -10,7 +10,8 @@
     "start": "next start",
     "migration:add": "ts-node ./.migrations/migration-create.ts",
     "migration:dev": "ts-node ./.migrations/migration-run.ts --dev",
-    "migration:run": "ts-node ./.migrations/migration-run.ts"
+    "migration:run": "ts-node ./.migrations/migration-run.ts",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.11",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@testing-library/cypress": "^9.0.0",
     "@types/node": "^18.14.0",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.28",
@@ -47,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "autoprefixer": "^10.4.13",
+    "cypress": "^12.6.0",
     "eslint": "^8.34.0",
     "eslint-config-next": "13.1.6",
     "postcss": "^8.4.21",
