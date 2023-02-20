@@ -1,9 +1,6 @@
 name: E2E Testing
 
-on:
-  deployment_status:
-    branches-ignore:
-      - main
+on: push
 
 jobs:
   e2e:
