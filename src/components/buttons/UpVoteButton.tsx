@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "../../lib/ui/Button";
 
 const UpVoteButton: React.FC<{
   visible: boolean;
@@ -9,9 +10,9 @@ const UpVoteButton: React.FC<{
   }
 
   return (
-    <button className="btn-primary btn-sm btn" onClick={onClick}>
+    <Button size="sm" onClick={onClick}>
       Vote 👍
-    </button>
+    </Button>
   );
 };
 

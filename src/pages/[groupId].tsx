@@ -23,26 +23,33 @@ import {
   HiOutlineClipboardDocumentCheck,
 } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
+import Balancer from "react-wrap-balancer";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
-import Balancer from "react-wrap-balancer";
-
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 import { useUser } from "../hooks/useUser";
 import { publicGroupSelect } from "../utils/selectors";
+import { Button } from "../lib/ui/Button";
+
 TimeAgo.addDefaultLocale(en);
 
-const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
-  ssr: false,
-});
+const UpVoteButton = dynamic(
+  () => import("../components/buttons/UpVoteButton"),
+  {
+    ssr: false,
+  }
+);
 
-const DeleteButton = dynamic(() => import("../components/DeleteButton"), {
-  ssr: false,
-});
+const DeleteButton = dynamic(
+  () => import("../components/buttons/DeleteButton"),
+  {
+    ssr: false,
+  }
+);
 
 const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
@@ -324,17 +331,11 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
               </div>
 
               <div className="form-control mt-6">
-                <button
-                  type="submit"
-                  disabled={createItemMutation.isLoading}
-                  className={`btn-primary btn ${
-                    createItemMutation.isLoading ? "loading" : ""
-                  }`}
-                >
+                <Button type="submit" loading={createItemMutation.isLoading}>
                   {createItemMutation.isLoading
                     ? "Creating item..."
                     : "Create item"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

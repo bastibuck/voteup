@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { type NextPage } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import type { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -8,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { api } from "../utils/api";
 import { NewGroupSchema } from "../utils/schemas";
-import { useRouter } from "next/router";
 import { useUser } from "../hooks/useUser";
+import { Button } from "../lib/ui/Button";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -98,17 +99,11 @@ const Home: NextPage = () => {
               </div>
 
               <div className="form-control mt-6">
-                <button
-                  type="submit"
-                  disabled={createGroupMutation.isLoading}
-                  className={`btn-primary btn ${
-                    createGroupMutation.isLoading ? "loading" : ""
-                  }`}
-                >
+                <Button type="submit" loading={createGroupMutation.isLoading}>
                   {createGroupMutation.isLoading
                     ? "Loading group..."
                     : "Create group"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
