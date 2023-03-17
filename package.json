@@ -13,7 +13,8 @@
     "migration:run": "ts-node ./.migrations/migration-run.ts",
     "cypress:open": "cypress open --e2e",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.11",
