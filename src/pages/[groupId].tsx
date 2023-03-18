@@ -254,10 +254,13 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                 <div className="card-body">
                   <div className="flex items-center gap-2">
                     <h3 className="m-0">{item.text}</h3>
-                    <DeleteButton
-                      onClick={() => handleDelete(item.id)}
-                      visible={group.data.isAdmin || item.isCreator}
-                    />
+                    {group.data.isAdmin || item.isCreator ? (
+                      <DeleteButton
+                        toolTip="Do you really want to delete this item?"
+                        onClick={() => handleDelete(item.id)}
+                        withFadeIn
+                      />
+                    ) : null}
                   </div>
 
                   <div className="card-actions min-h-12 items-end justify-between align-bottom">

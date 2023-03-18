@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 import { cns } from "../../utils/classnames";
@@ -8,6 +9,10 @@ interface ButtonProps {
   size?: "sm" | "xs";
   casing?: "uppercase" | "normal";
   loading?: boolean;
+
+  as?: "button" | "link" | "label";
+  href?: string;
+  htmlFor?: React.LabelHTMLAttributes<HTMLLabelElement>["htmlFor"];
 
   type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
   disabled?: React.ButtonHTMLAttributes<HTMLButtonElement>["disabled"];
@@ -21,6 +26,9 @@ export const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
   size,
   casing,
   loading = false,
+  as = "button",
+  href,
+  htmlFor,
 
   type = "button",
   disabled,
@@ -35,6 +43,22 @@ export const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
     ["normal-case", casing === "normal"],
     ["loading", loading],
   ]);
+
+  if (as === "label" && htmlFor) {
+    return (
+      <label htmlFor={htmlFor} className={classNames}>
+        {children}
+      </label>
+    );
+  }
+
+  if (as === "link" && href) {
+    return (
+      <Link href={href} className={classNames}>
+        {children}
+      </Link>
+    );
+  }
 
   return (
     <button

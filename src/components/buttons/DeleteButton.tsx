@@ -1,23 +1,31 @@
 import React from "react";
 import { Button } from "../../lib/ui/Button";
 import ToolTip from "../../lib/ui/ToolTip";
+import { cns } from "../../utils/classnames";
 
 interface DeleteButtonProps {
   onClick: () => void;
-  visible?: boolean;
+  toolTip: string;
+  tooltipOpen?: boolean;
+  withFadeIn?: boolean;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   onClick,
-  visible = true,
+  toolTip,
+  tooltipOpen = false,
+  withFadeIn = false,
 }) => {
-  if (!visible) {
-    return null;
-  }
+  const classNames = cns([
+    [
+      "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+      withFadeIn,
+    ],
+  ]);
 
   return (
-    <div className="opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-      <ToolTip toolTip="Do you really want to delete this item?">
+    <div className={classNames}>
+      <ToolTip toolTip={toolTip} open={tooltipOpen}>
         <Button
           onClick={onClick}
           variant="error"

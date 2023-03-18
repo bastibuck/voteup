@@ -106,7 +106,11 @@ const MyGroupsPage: NextPage = ({}) => {
               <div className="card-body">
                 <div className="flex items-center gap-2">
                   <h3 className="m-0">{group.name}</h3>
-                  <DeleteButton onClick={() => handleDelete(group.groupId)} />
+                  <DeleteButton
+                    toolTip="Do you really want to delete this group?"
+                    onClick={() => handleDelete(group.groupId)}
+                    withFadeIn
+                  />
                 </div>
 
                 <p className="m-0">{group.description}</p>
@@ -141,12 +145,9 @@ const MyGroupsPage: NextPage = ({}) => {
                       </Button>
                     </ToolTip>
 
-                    <Link
-                      href={group.groupId}
-                      className="btn-primary btn-sm btn"
-                    >
+                    <Button as="link" href={group.groupId} size="sm">
                       Open
-                    </Link>
+                    </Button>
                   </div>
                 </div>
               </div>

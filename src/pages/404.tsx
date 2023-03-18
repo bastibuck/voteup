@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import { Button } from "../lib/ui/Button";
 
 const NotFound = () => {
   return (
@@ -22,9 +22,9 @@ const NotFound = () => {
               back to the home screen.
             </p>
             <div className="card-actions justify-end">
-              <Link href={"/"} className="btn-primary btn">
+              <Button as="link" href={"/"}>
                 Create new group
-              </Link>
+              </Button>
             </div>
           </div>
         </div>
