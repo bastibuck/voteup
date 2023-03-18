@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import { useCopyToClipboard } from "react-use";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 import { api } from "../utils/api";
 
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 import { useUser } from "../hooks/useUser";
-import { useEffect, useState } from "react";
-import DeleteButton from "../components/DeleteButton";
+import DeleteButton from "../components/buttons/DeleteButton";
+import { Button } from "../lib/ui/Button";
+import { ToolTip } from "../lib/ui/ToolTip";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -105,8 +107,9 @@ const MyGroupsPage: NextPage = ({}) => {
                 <div className="flex items-center gap-2">
                   <h3 className="m-0">{group.name}</h3>
                   <DeleteButton
+                    toolTip="Do you really want to delete this group?"
                     onClick={() => handleDelete(group.groupId)}
-                    visible={true}
+                    withFadeIn
                   />
                 </div>
 
@@ -123,28 +126,28 @@ const MyGroupsPage: NextPage = ({}) => {
                   </div>
 
                   <div className="flex gap-2">
-                    <button
-                      className={`btn-outline btn-primary tooltip btn-sm btn normal-case ${
-                        copiedUrl.includes(group.groupId)
-                          ? "tooltip-open tooltip-success"
-                          : ""
-                      }`}
-                      data-tip={
+                    <ToolTip
+                      toolTip={
                         copiedUrl.includes(group.groupId)
                           ? "Link copied to clipboard"
                           : undefined
                       }
-                      onClick={() => copyUrlToClipboard(group.groupId)}
+                      open={copiedUrl.includes(group.groupId)}
+                      color="success"
                     >
-                      Copy URL
-                    </button>
+                      <Button
+                        outlined
+                        size="sm"
+                        casing="normal"
+                        onClick={() => copyUrlToClipboard(group.groupId)}
+                      >
+                        Copy URL
+                      </Button>
+                    </ToolTip>
 
-                    <Link
-                      href={group.groupId}
-                      className="btn-primary btn-sm btn"
-                    >
+                    <Button as="link" href={group.groupId} size="sm">
                       Open
-                    </Link>
+                    </Button>
                   </div>
                 </div>
               </div>

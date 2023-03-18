@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import { AiOutlineTwitter, AiOutlineGithub } from "react-icons/ai";
+import { Button } from "../lib/ui/Button";
 
 const Footer = () => {
   return (
@@ -76,9 +77,9 @@ const Footer = () => {
               parties - as we don't use any.
             </p>
             <div className="modal-action">
-              <label htmlFor="privacy-modal" className="btn-primary btn">
+              <Button as="label" htmlFor="privacy-modal">
                 Close
-              </label>
+              </Button>
             </div>
           </label>
         </label>
@@ -141,9 +142,9 @@ const Footer = () => {
             </p>
 
             <div className="modal-action sticky bottom-0 bg-inherit py-6">
-              <label htmlFor="imprint-modal" className="btn-primary btn">
+              <Button as="label" htmlFor="imprint-modal">
                 Close
-              </label>
+              </Button>
             </div>
           </label>
         </label>

@@ -23,26 +23,33 @@ import {
   HiOutlineClipboardDocumentCheck,
 } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
+import Balancer from "react-wrap-balancer";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 import { api } from "../utils/api";
 import { NewItemSchema } from "../utils/schemas";
 
 import { prisma } from "../server/db";
-import Balancer from "react-wrap-balancer";
-
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en";
 import { useUser } from "../hooks/useUser";
 import { publicGroupSelect } from "../utils/selectors";
+import { Button } from "../lib/ui/Button";
+
 TimeAgo.addDefaultLocale(en);
 
-const UpVoteButton = dynamic(() => import("../components/UpVoteButton"), {
-  ssr: false,
-});
+const UpVoteButton = dynamic(
+  () => import("../components/buttons/UpVoteButton"),
+  {
+    ssr: false,
+  }
+);
 
-const DeleteButton = dynamic(() => import("../components/DeleteButton"), {
-  ssr: false,
-});
+const DeleteButton = dynamic(
+  () => import("../components/buttons/DeleteButton"),
+  {
+    ssr: false,
+  }
+);
 
 const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
   const utils = api.useContext();
@@ -234,7 +241,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                 initial={{ height: 0, opacity: 0, marginBottom: 0 }}
                 animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
                 exit={{ height: 0, opacity: 0, marginBottom: 0 }}
-                className="group indicator card mx-6 w-full max-w-xl bg-base-100 shadow-xl"
+                className="group card indicator mx-6 w-full max-w-xl bg-base-100 shadow-xl"
                 key={item.id}
                 layout
               >
@@ -247,10 +254,13 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                 <div className="card-body">
                   <div className="flex items-center gap-2">
                     <h3 className="m-0">{item.text}</h3>
-                    <DeleteButton
-                      onClick={() => handleDelete(item.id)}
-                      visible={group.data.isAdmin || item.isCreator}
-                    />
+                    {group.data.isAdmin || item.isCreator ? (
+                      <DeleteButton
+                        toolTip="Do you really want to delete this item?"
+                        onClick={() => handleDelete(item.id)}
+                        withFadeIn
+                      />
+                    ) : null}
                   </div>
 
                   <div className="card-actions min-h-12 items-end justify-between align-bottom">
@@ -324,17 +334,11 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
               </div>
 
               <div className="form-control mt-6">
-                <button
-                  type="submit"
-                  disabled={createItemMutation.isLoading}
-                  className={`btn-primary btn ${
-                    createItemMutation.isLoading ? "loading" : ""
-                  }`}
-                >
+                <Button type="submit" loading={createItemMutation.isLoading}>
                   {createItemMutation.isLoading
                     ? "Creating item..."
                     : "Create item"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
