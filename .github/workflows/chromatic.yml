@@ -2,6 +2,10 @@ name: "Chromatic"
 
 on: pull_request
 
+env:
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+  STALE_AFTER_DAYS: ${{ vars.STALE_AFTER_DAYS }}
+
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
