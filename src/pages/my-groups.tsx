@@ -12,7 +12,7 @@ import { api } from "../utils/api";
 import { useUser } from "../hooks/useUser";
 import DeleteButton from "../components/buttons/DeleteButton";
 import { Button } from "../lib/ui/Button";
-import ToolTip from "../lib/ui/ToolTip";
+import { ToolTip } from "../lib/ui/ToolTip";
 
 TimeAgo.addDefaultLocale(en);
 

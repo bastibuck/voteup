@@ -9,7 +9,7 @@ interface ToolTipProps {
   responsive?: boolean;
 }
 
-const ToolTip: React.FC<React.PropsWithChildren<ToolTipProps>> = ({
+export const ToolTip: React.FC<React.PropsWithChildren<ToolTipProps>> = ({
   children,
   toolTip,
   open = false,
@@ -18,7 +18,7 @@ const ToolTip: React.FC<React.PropsWithChildren<ToolTipProps>> = ({
   responsive = false,
 }) => {
   const classNames = cns([
-    ["tooltip flex"],
+    ["tooltip inline-flex"],
     ["tooltip-open", open],
     ["tooltip-success", color === "success"],
     ["tooltip-bottom", position === "bottom"],
@@ -31,5 +31,3 @@ const ToolTip: React.FC<React.PropsWithChildren<ToolTipProps>> = ({
     </div>
   );
 };
-
-export default ToolTip;

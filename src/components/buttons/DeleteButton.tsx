@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../../lib/ui/Button";
-import ToolTip from "../../lib/ui/ToolTip";
+import { ToolTip } from "../../lib/ui/ToolTip";
 import { cns } from "../../utils/classnames";
 
 interface DeleteButtonProps {

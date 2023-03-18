@@ -36,7 +36,8 @@ export const Button: React.FC<React.PropsWithChildren<ButtonProps>> = ({
 }) => {
   const classNames = cns([
     ["btn"],
-    [`btn-${variant}`],
+    ["btn-primary", variant === "primary"],
+    ["btn-error", variant === "error"],
     ["btn-sm", size === "sm"],
     ["btn-xs", size === "xs"],
     ["btn-outline", outlined],

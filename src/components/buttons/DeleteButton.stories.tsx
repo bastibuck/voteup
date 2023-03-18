@@ -7,6 +7,14 @@ const meta: Meta<typeof DeleteButton> = {
   parameters: {
     layout: "fullscreen",
   },
+  decorators: [
+    (Story) => (
+      <div className="group grid h-48 place-items-center">
+        <Story />
+      </div>
+    ),
+  ],
+
   args: {
     toolTip: "Do you really want to delete this item?",
   },
@@ -15,13 +23,6 @@ const meta: Meta<typeof DeleteButton> = {
       control: "boolean",
     },
   },
-  decorators: [
-    (Story) => (
-      <div className="group grid h-48 place-items-center">
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;

@@ -241,7 +241,7 @@ const GroupPage: NextPage<ServerSideProps> = ({ serverSideGroup }) => {
                 initial={{ height: 0, opacity: 0, marginBottom: 0 }}
                 animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
                 exit={{ height: 0, opacity: 0, marginBottom: 0 }}
-                className="group indicator card mx-6 w-full max-w-xl bg-base-100 shadow-xl"
+                className="group card indicator mx-6 w-full max-w-xl bg-base-100 shadow-xl"
                 key={item.id}
                 layout
               >
